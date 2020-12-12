@@ -4,7 +4,6 @@ const errorHandler = require('../helpers/dbErrorHandler')
 
 const create = (req, res, next) => {
     const user = new User(req.body)
-    console.log(user)
     user.save((err, result) => {
         if (err) {
             return res.status(400).json({
@@ -16,6 +15,7 @@ const create = (req, res, next) => {
         })
     })
 }
+
 const list = (req, res) => {
     User.find((err, users) => {
         if (err) {
@@ -26,6 +26,7 @@ const list = (req, res) => {
         res.json(users)
     }).select('name email updated created')
 }
+
 const userByID = (req, res, next, id) => {
     User.findById(id).exec((err, user) => {
         if (err || !user)

@@ -1,22 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect }  from 'react'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardActions, CardContent } from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { Link }from 'react-router-dom'
-import PropTypes from 'prop-types'
+import { Redirect } from 'react-router-dom'
 
-
-
-import { create } from './api-user'
-
+import auth from '../auth/auth-helper'
+import { read, update } from './api-user'
 
 const useStyles = makeStyles( theme => ({
     cards : {
@@ -42,55 +34,80 @@ const useStyles = makeStyles( theme => ({
         marginBottom: theme.spacing(2)}
 }))
 
-const Signup = () => {
+
+const EditProfile = ({ match }) => {
+
     const [state, setState] = useState({
         name: '',
         email: '',
-        password: ''
+        password: '',
+        redirectToProfile: false,
+        error: ''
     })
-    const [ open, setOpen ] = useState(false)
-    const [ error, setError ] = useState('')
-  
-  
+    
+    const handleChange = (event) => {
+        const { id, value } = event.target
+         setState(prevState => ({
+             ...prevState,
+             [id] : value
+         }))
+    } 
 
-   const handleChange = (event) => {
-       const { id, value } = event.target
-        setState(prevState => ({
-            ...prevState,
-            [id] : value
-        }))
-   } 
-
+    const init = () => {
+        const jwt = auth.isAuthenticated()
+        read({
+            userId: match.params.userId
+        }, {t: jwt.token}).then((data) => {
+            if (data.error)
+                setState({error: data.error})
+            else
+                setState({name: data.name, email: data.email})
+        })
+    }  
    
-
-  /*  const handleChange = (e) => {
-    e.preventDefault();
-    console.log('button clicked', e.target)
-   } */
+     useEffect(() => {
+        init()
+    }, []) 
+    console.log(match)
 
     const clickSubmit = (e) => {
         e.preventDefault();
+
+        const jwt = auth.isAuthenticated()
 
         const user = {
             name: state.name || undefined,
             email: state.email || undefined,
             password: state.password || undefined,
-            
         }
 
-        create(user).then((data) => {
-            if (data.error)
-                setError(data.error)
-             else 
-                setError('')
-                setOpen(true) 
+        update({
+            userId: match.params.userId
+        }, {
+            t: jwt.token
+        }, user).then((data) => {
+            if (data.error) {
+                setState({error: data.error})
+            } else {
+                setState({'userId': data._id, 'redirectToProfile': true})
+            }
         })
-    } 
 
-    const classes = useStyles()
-    
-        return (<div>
-            <Card className={classes.cards}>
+    }
+   
+    console.log(match.params.userId)
+
+    const classes = useStyles() 
+
+    const redirect = state.redirectToProfile
+
+    if (redirect) {
+        return <Redirect to={'/user/' + match.params.userId} /> 
+      }
+
+    return (
+        <div>
+             <Card className={classes.cards}>
                 <CardContent>
                   <Typography type="headline" variant="h5" color="primary" className={classes.title}>
                       Sign Up
@@ -101,9 +118,9 @@ const Signup = () => {
                 <TextField id="password" label="Password" className={classes.textField} value={state.password} onChange={handleChange}/>
 
                 <br/> {
-            error && (<Typography variant="h6" color="error">
+            state.error && (<Typography variant="h6" color="error">
               <Icon color="error" className={classes.error}>error</Icon>
-              {error}
+              {state.error}
             </Typography>)
           }
 
@@ -112,28 +129,8 @@ const Signup = () => {
           <Button onClick={clickSubmit} color="primary" variant="contained" className={classes.submit}>Submit</Button>
         </CardActions>
             </Card>
-             <Dialog open={open} disableBackdropClick={true}>
-             <DialogTitle>New Account</DialogTitle>
-             <DialogContent>
-               <DialogContentText>
-                 New account successfully created.
-               </DialogContentText>
-             </DialogContent>
-             <DialogActions>
-               <Link to="/signin">
-                 <Button color="primary" autoFocus="autoFocus" variant="contained">
-                   Sign In
-                 </Button>
-               </Link>
-             </DialogActions>
-           </Dialog>
-           </div>
-        )
-    }
+        </div>
+    )
+}
 
-    /* Signup.propTypes = {
-      classes: PropTypes.func.isRequired
-    }
-     */
-
-export default Signup
+export default EditProfile

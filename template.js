@@ -6,9 +6,11 @@ module.exports = () => {
             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
             <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
             <title>MERN Skeleton</title>
+            <style> a { text-decoration: none}</style>
         </head>
-        <body>
+        <body style="margin:0">
             <div id="root"></div>
+            <style id="jss-server-side"></style>
             <script type="text/javascript" src="/dist/bundle.js">
             </script>
         </body>

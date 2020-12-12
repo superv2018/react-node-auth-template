@@ -8,9 +8,7 @@ import  {list} from './api-user';
   const useStyles = makeStyles( theme => ({
     root: {
         padding: theme.spacing(4),
-        margin: theme.spacing(6),
-        maxWidth: 800,
-        
+        margin: `${theme.spacing(4)}px 0 ${theme.spacing(2)}px`,
     },
     title: {
         margin: theme.spacing(4),
@@ -28,7 +26,6 @@ const Users = () => {
                     if (data.error)
                     console.log(data.error)
                     else
-                    console.log(data)
                     setUsers(data)
                 })
             }
@@ -42,14 +39,14 @@ const Users = () => {
         const classes = useStyles()
 
         return (
-            <Paper  classNames={classes.root} elevation={4}>
-                <Typography component="h2" color="primary" type="title" classNames={classes.title}>
+            <Paper  className={classes.root} elevation={4}>
+                <Typography variant="h5" color="primary" type="title" className={classes.title}>
                 All Users
                 </Typography>
                 <List dense>
                     {users.map((item, i) => {
                         return <Link to={"/user/" + item._id} key={i}>
-                            <ListItem button>
+                            <ListItem>
                                 <ListItemAvatar>
                                     <Avatar>
                                     <Person/>

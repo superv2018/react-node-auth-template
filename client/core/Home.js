@@ -5,6 +5,7 @@ import {Card, CardContent, CardMedia } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
 import burgImg from '../assets/images/burg.jpg' 
 import { Link} from 'react-router-dom'
+import auth from '../auth/auth-helper'
 
 const styles = theme => ({
     card: {
@@ -26,10 +27,7 @@ class Home extends Component {
         const { classes } = this.props
         return (
             <div>
-                <Link to="/users">User</Link>
-                <p></p>
-                <Link to="/test">Test</Link>
-                <Link to="/signup">Signup</Link>
+                
                 <Card className={classes.card} >
                     <Typography type="headline" component="h2" className={classes.title}>
                         Home Page
