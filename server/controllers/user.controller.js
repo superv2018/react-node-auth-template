@@ -47,6 +47,7 @@ const read = (req, res) => {
 const update = (req, res, next) => {
     let user = req.profile
     user = _.extend(user, req.body)
+    console.log(user)
     user.updated = Date.now()
     user.save((err) => {
         if (err) {

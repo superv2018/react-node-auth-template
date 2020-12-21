@@ -42,7 +42,8 @@ const EditProfile = ({ match }) => {
         email: '',
         password: '',
         redirectToProfile: false,
-        error: ''
+        error: '',
+        about: '',
     })
     
     const handleChange = (event) => {
@@ -61,14 +62,14 @@ const EditProfile = ({ match }) => {
             if (data.error)
                 setState({error: data.error})
             else
-                setState({name: data.name, email: data.email})
+                setState({name: data.name, email: data.email, about: data.about})
         })
     }  
    
      useEffect(() => {
         init()
     }, []) 
-    console.log(match)
+    
 
     const clickSubmit = (e) => {
         e.preventDefault();
@@ -79,6 +80,7 @@ const EditProfile = ({ match }) => {
             name: state.name || undefined,
             email: state.email || undefined,
             password: state.password || undefined,
+            about: state.about || undefined
         }
 
         update({
@@ -95,7 +97,7 @@ const EditProfile = ({ match }) => {
 
     }
    
-    console.log(match.params.userId)
+  
 
     const classes = useStyles() 
 
@@ -113,9 +115,11 @@ const EditProfile = ({ match }) => {
                       Sign Up
                 </Typography>  
               
-                <TextField id="name" label="Name" className={classes.textField} value={state.name} onChange={handleChange}/>
-                <TextField id="email" label="Email" className={classes.textField} value={state.email} onChange={handleChange}/>
-                <TextField id="password" label="Password" className={classes.textField} value={state.password} onChange={handleChange}/>
+                <TextField id="name" label="Name" className={classes.textField} value={state.name || ""} onChange={handleChange}/> <br />
+                <TextField id="about" label="About" className={classes.textField} value={state.about || ""} onChange={handleChange}/> <br />
+                <TextField id="email" label="Email" className={classes.textField} value={state.email || ""} onChange={handleChange}/> <br />
+                <TextField id="password" label="Password" className={classes.textField} value={state.password || ""} onChange={handleChange}/>
+               
 
                 <br/> {
             state.error && (<Typography variant="h6" color="error">

@@ -38,6 +38,7 @@ const read = (params, credentials) => {
 }
 
 const update = (params, credentials, user) => {
+    console.log(user)
     return fetch('/api/users/' + params.userId, {
         method: 'PUT',
         headers: {
@@ -47,6 +48,7 @@ const update = (params, credentials, user) => {
         },
         body: JSON.stringify(user)
     }).then((res) => {
+        console.log(res)
         return res.json()
     }).catch((err) => {
         console.log(err)
