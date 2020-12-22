@@ -112,7 +112,7 @@ const EditProfile = ({ match }) => {
              <Card className={classes.cards}>
                 <CardContent>
                   <Typography type="headline" variant="h5" color="primary" className={classes.title}>
-                      Sign Up
+                      Edit Profile
                 </Typography>  
               
                 <TextField id="name" label="Name" className={classes.textField} value={state.name || ""} onChange={handleChange}/> <br />
