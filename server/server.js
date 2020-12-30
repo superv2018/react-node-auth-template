@@ -1,7 +1,7 @@
-const app = require('./express')
-const mongoose = require('mongoose')
+import app from './express'
+import mongoose from 'mongoose'
 
-const config = require('../config/config')
+import config from '../config/config'
 
 
 mongoose.Promise = global.Promise

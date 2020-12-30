@@ -1,8 +1,8 @@
-const WebpackDevMiddleware = require('webpack-dev-middleware')
-const webpack = require('webpack')
+import WebpackDevMiddleware from 'webpack-dev-middleware'
+import webpack from 'webpack'
 //const config = require('../webpack.config.js')
-const webpackHotMiddleware = require('webpack-hot-middleware')
-const webpackConfig = require('../webpack.config.client')
+import webpackHotMiddleware from 'webpack-hot-middleware'
+import webpackConfig from '../webpack.config.client'
 
 
 const compile = (app) => {
@@ -17,4 +17,4 @@ const compile = (app) => {
     }
 }
 
- module.exports =  {compile}
+ export default compile

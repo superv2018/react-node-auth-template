@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const crypto = require('crypto')
+import mongoose from 'mongoose'
+import crypto from 'crypto'
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -27,6 +27,12 @@ const UserSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
+    photo: {
+        data: Buffer,
+        contentType: String
+    },
+    following: [{type: mongoose.Schema.ObjectId, ref: 'User'}],
+    followers: [{type: mongoose.Schema.ObjectId, ref: 'User'}],
     salt: String
 })
 
@@ -70,4 +76,4 @@ UserSchema.path('hashed_password').validate(function(v) {
     }
 }, null)
 
-module.exports = mongoose.model('User', UserSchema)
+export default mongoose.model('User', UserSchema)

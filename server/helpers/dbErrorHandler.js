@@ -31,4 +31,4 @@ const getUnigueErrorMessage = (err) => {
     return output
 }
 
-module.exports = getErrorMessage 
+export default getErrorMessage 

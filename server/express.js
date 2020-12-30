@@ -1,10 +1,10 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const compress = require("compression");
-const cors = require("cors");
-const helmet = require("helmet");
-const path = require("path");
+import express from "express";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import compress from "compression";
+import cors from "cors";
+import helmet from "helmet";
+import path from "path";
 
 
 // server side rendering module
@@ -24,17 +24,17 @@ const { indigo, pink } = require("@material-ui/core/colors");
  */
 
 //comment out before production
-const devBundle = require("./devBundle");
+import compile from "./devBundle";
 
-const Template = require("./../template");
-const userRoutes = require("./routes/user.routes");
-const authRoutes = require("./routes/auth.routes");
+import Template from "./../template";
+import userRoutes from "./routes/user.routes";
+import  authRoutes from "./routes/auth.routes";
 
 const CURRENT_WORKING_DIR = process.cwd();
 const app = express();
 
 //comment out before production
-devBundle.compile(app);
+compile(app);
 
 
 app.use(bodyParser.json());
@@ -62,4 +62,4 @@ app.use((err, req, res, next) => {
   }
 });
 
-module.exports = app;
+export default app;

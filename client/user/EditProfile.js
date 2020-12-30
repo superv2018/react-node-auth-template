@@ -6,6 +6,8 @@ import Icon from '@material-ui/core/Icon';
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardActions, CardContent } from '@material-ui/core';
 import { Redirect } from 'react-router-dom'
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import Avatar from '@material-ui/core/Avatar';
 
 import auth from '../auth/auth-helper'
 import { read, update } from './api-user'
@@ -31,7 +33,18 @@ const useStyles = makeStyles( theme => ({
       },
       submit: {
         margin: 'auto',
-        marginBottom: theme.spacing(2)}
+        marginBottom: theme.spacing(2)},
+        input: {
+            display: 'none',
+        },
+        filename: {
+            marginLeft: "10px"
+        },
+        bigAvatar: {
+            width: 60,
+            height: 60,
+            margin: 10
+          }
 }))
 
 
@@ -44,17 +57,26 @@ const EditProfile = ({ match }) => {
         redirectToProfile: false,
         error: '',
         about: '',
+        photo: '',
     })
+
+    let userData = new FormData()
     
-    const handleChange = (event) => {
-        const { id, value } = event.target
+    const handleChange = name => event => {
+        const value = name === 'photo'
+            ? event.target.files[0]
+            : event.target.value
+        userData.set(name, value)
          setState(prevState => ({
              ...prevState,
-             [id] : value
+             [name] : value
          }))
     } 
 
+    
+
     const init = () => {
+        userData
         const jwt = auth.isAuthenticated()
         read({
             userId: match.params.userId
@@ -62,11 +84,12 @@ const EditProfile = ({ match }) => {
             if (data.error)
                 setState({error: data.error})
             else
-                setState({name: data.name, email: data.email, about: data.about})
+                setState({id: data._id,name: data.name, email: data.email, about: data.about})
         })
     }  
    
      useEffect(() => {
+        
         init()
     }, []) 
     
@@ -87,17 +110,20 @@ const EditProfile = ({ match }) => {
             userId: match.params.userId
         }, {
             t: jwt.token
-        }, user).then((data) => {
+        }, userData).then((data) => {
+            console.log(userData)
             if (data.error) {
                 setState({error: data.error})
             } else {
-                setState({'userId': data._id, 'redirectToProfile': true})
+                setState({'redirectToProfile': true})
             }
         })
 
     }
    
-  
+    const photoUrl = state.id 
+    ? `/api/users/photo/${state.id}?${new Date().getTime()}`
+    : '/api/users/defaultphoto'
 
     const classes = useStyles() 
 
@@ -114,11 +140,19 @@ const EditProfile = ({ match }) => {
                   <Typography type="headline" variant="h5" color="primary" className={classes.title}>
                       Edit Profile
                 </Typography>  
-              
-                <TextField id="name" label="Name" className={classes.textField} value={state.name || ""} onChange={handleChange}/> <br />
-                <TextField id="about" label="About" className={classes.textField} value={state.about || ""} onChange={handleChange}/> <br />
-                <TextField id="email" label="Email" className={classes.textField} value={state.email || ""} onChange={handleChange}/> <br />
-                <TextField id="password" label="Password" className={classes.textField} value={state.password || ""} onChange={handleChange}/>
+                <Avatar src={photoUrl} className={classes.bigAvatar} />
+                <input accept="image/*" type="file"
+                onChange={handleChange('photo')} id="icon-button-file"
+                className={classes.input} />
+                <label htmlFor="icon-button-file">
+                    <Button color="default" component="span">
+                        Upload <CloudUploadIcon />
+                    </Button>
+                </label> <span className={classes.filename}>{state.photo ? state.photo.name : ''}</span> <br />
+                <TextField id="name" label="Name" className={classes.textField} value={state.name || ""} onChange={handleChange('name')} margin="normal" /> <br />
+                <TextField id="about" label="About" className={classes.textField} value={state.about || ""} onChange={handleChange('about')} margin="normal" /> <br />
+                <TextField id="email" label="Email" className={classes.textField} value={state.email || ""} onChange={handleChange('email')} margin="normal" /> <br />
+                <TextField id="password" label="Password" className={classes.textField} value={state.password || ""} onChange={handleChange('password')} margin="normal" />
                
 
                 <br/> {

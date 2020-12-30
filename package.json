@@ -39,6 +39,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
+    "formidable": "^2.0.0-canary.20200504.1",
     "helmet": "^4.2.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",
