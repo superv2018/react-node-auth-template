@@ -8,20 +8,20 @@ import path from "path";
 
 
 // server side rendering module
-/* const React = require("react");
-const ReactDOMServer = require('react-dom/server');
-const { StaticRouter } = require("react-router-dom/");
-const MainRouter  = require("../client/MainRouter");
+import React from 'react'
+import ReactDOMServer from 'react-dom/server'
+import {StaticRouter} from "react-router-dom"
+import MainRouter from "../client/MainRouter"
 
-const { JssProvider } = require("react-jss");
-//const { SheetsRegistry } = require('react-jss')
-const {
+
+
+import {
   ThemeProvider,
   createMuiTheme,
   ServerStyleSheets
-} = require("@material-ui/core/styles");
-const { indigo, pink } = require("@material-ui/core/colors");
- */
+} from "@material-ui/core/styles";
+import { indigo, pink } from "@material-ui/core/colors";
+ 
 
 //comment out before production
 import compile from "./devBundle";
@@ -49,10 +49,48 @@ app.use("/dist", express.static(path.join(CURRENT_WORKING_DIR, "dist")));
 app.use("/", userRoutes);
 app.use("/", authRoutes);
 
+const theme = createMuiTheme({
+  palette: {
+      primary: {
+          light: '#757de8',
+          main: '#3f51b5',
+          dark: '#002984',
+          contrastText: '#fff',
+      },
+      secondary: {
+          light: '#ff79b0',
+          main: '#ff4081',
+          dark: '#c60055',
+          contrastText: '#000',
+      },
+      openTitle: indigo['400'],
+      protectedTitle: pink['400'],
+      type: 'light'
+  }
+})
 
+app.get('*', (req, res) => {
+const sheets = new ServerStyleSheets()
+const context = {}
+const markup = ReactDOMServer.renderToString(
+  sheets.collect(
+    <StaticRouter location={req.url} context={context}> 
+      <ThemeProvider theme={theme}>
+        <MainRouter />
+      </ThemeProvider>
+    </StaticRouter>
+  )
+)
 
- app.get('/', (req, res) => {
-    res.status(200).send(Template())
+if (context.url) {
+  return res.redirect(303, context.url)
+}
+
+const css = sheets.toString()
+    res.status(200).send(Template({
+      markup: markup,
+      css: css
+    }))
 }) 
 
 //catch unauthorized errors

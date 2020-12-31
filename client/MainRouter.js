@@ -12,12 +12,6 @@ import Menu from './core/Menu'
 
 const MainRouter = () => {
 
-    //Remove the server-side injected CSS when React component mounts
-    useEffect(() => {
-        const jssStyles = document.getElementById('jss-server-side')
-        if (jssStyles && jssStyles.parentNode)
-        jssStyles.parentNode.removeChild(jssStyles)
-    })
         return (
             <div>
                 <Menu/>

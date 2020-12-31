@@ -29,6 +29,14 @@ const theme = createMuiTheme({
 })
 
 const App = () => {
+
+    //Remove the server-side injected CSS when React component mounts
+    React.useEffect(() => {
+        const jssStyles = document.getElementById('jss-server-side')
+        if (jssStyles) {
+        jssStyles.parentNode.removeChild(jssStyles)
+        }
+    }, [])
     return (
     <Router>
         <MuiThemeProvider theme={theme}>
