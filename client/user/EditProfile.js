@@ -58,15 +58,16 @@ const EditProfile = ({ match }) => {
         error: '',
         about: '',
         photo: '',
+        id: ''
     })
 
-    let userData = new FormData()
+    const jwt = auth.isAuthenticated()
     
     const handleChange = name => event => {
         const value = name === 'photo'
             ? event.target.files[0]
             : event.target.value
-        userData.set(name, value)
+        //userData.set(name, value)
          setState(prevState => ({
              ...prevState,
              [name] : value
@@ -76,12 +77,10 @@ const EditProfile = ({ match }) => {
     
 
     const init = () => {
-        userData
-        const jwt = auth.isAuthenticated()
         read({
             userId: match.params.userId
         }, {t: jwt.token}).then((data) => {
-            if (data.error)
+            if (data && data.error)
                 setState({error: data.error})
             else
                 setState({id: data._id,name: data.name, email: data.email, about: data.about})
@@ -96,23 +95,20 @@ const EditProfile = ({ match }) => {
 
     const clickSubmit = (e) => {
         e.preventDefault();
-
-        const jwt = auth.isAuthenticated()
-
-        const user = {
-            name: state.name || undefined,
-            email: state.email || undefined,
-            password: state.password || undefined,
-            about: state.about || undefined
-        }
+        let userData = new FormData()
+            state.name && userData.append('name', state.name)
+            state.email && userData.append('email', state.email)
+            state.password && userData.append('password', state.password)
+            state.about && userData.append('about', state.about)
+            state.photo && userData.append('photo', state.photo)
+        
 
         update({
             userId: match.params.userId
         }, {
             t: jwt.token
         }, userData).then((data) => {
-            console.log(userData)
-            if (data.error) {
+            if (data && data.error) {
                 setState({error: data.error})
             } else {
                 setState({'redirectToProfile': true})
@@ -145,11 +141,11 @@ const EditProfile = ({ match }) => {
                 onChange={handleChange('photo')} id="icon-button-file"
                 className={classes.input} />
                 <label htmlFor="icon-button-file">
-                    <Button color="default" component="span">
+                    <Button variant="contained" color="default" component="span">
                         Upload <CloudUploadIcon />
                     </Button>
                 </label> <span className={classes.filename}>{state.photo ? state.photo.name : ''}</span> <br />
-                <TextField id="name" label="Name" className={classes.textField} value={state.name || ""} onChange={handleChange('name')} margin="normal" /> <br />
+                <TextField id="name" label="Name" className={classes.textField} value={state.name || ""} onChange={handleChange('name')} multiline rows="2" margin="normal" /> <br />
                 <TextField id="about" label="About" className={classes.textField} value={state.about || ""} onChange={handleChange('about')} margin="normal" /> <br />
                 <TextField id="email" label="Email" className={classes.textField} value={state.email || ""} onChange={handleChange('email')} margin="normal" /> <br />
                 <TextField id="password" label="Password" className={classes.textField} value={state.password || ""} onChange={handleChange('password')} margin="normal" />

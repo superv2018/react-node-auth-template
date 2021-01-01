@@ -3,6 +3,8 @@ import mongoose from 'mongoose'
 
 import config from '../config/config'
 
+import dotenv from 'dotenv'
+dotenv.config()
 
 mongoose.Promise = global.Promise
 mongoose.connect(config.mongoUri, {useNewUrlParser: true,  useUnifiedTopology: true, useCreateIndex: true })

@@ -18,7 +18,6 @@ import { Link } from "react-router-dom";
 
 import DeleteUser from "./DeleteUser";
 import {read} from "./api-user";
-console.log(read)
 import auth from "../auth/auth-helper";
 
 const useStyles = makeStyles((theme) => ({
@@ -51,7 +50,6 @@ const Profile = ({ match }) => {
       },
       { t: jwt.token }
     ).then((data) => {
-      console.log(data)
       if (data.error) setRedirectToSignin(true);
       else setUser(data);
     });
@@ -61,7 +59,6 @@ const Profile = ({ match }) => {
     init(match.params.userId);
   }, [match.params.userId]);
 
-console.log(user)
   const photoUrl = user._id 
     ? `/api/users/photo/${user._id}?${new Date().getTime()}`
     : '/api/users/defaultphoto'
